@@ -1,0 +1,56 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exit.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/08 17:45:55 by adi-marc          #+#    #+#             */
+/*   Updated: 2025/07/08 17:51:02 by adi-marc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../../includes/minishell.h"
+
+static int  is_numeric(const char *s)
+{
+    if (*s == '+' || *s == '-')
+        s++;
+    if (!*s)
+        return (0);
+    while(*s)
+    {
+        if (!ft_isdigit(*s))
+            return(0);
+        s++;
+    }
+    return (1);
+}
+
+int builtin_exit(t_exec *context)
+{
+    int argc;
+    long    code;
+
+    argc = 0;
+    while (context->argv[argc])
+        argc++;
+    write(STDOUT_FILENO, "exit\n", 5);
+    if (argc > 2)
+    {
+        ft_printf("exit: too many arguments\n");
+        return (1);
+    }
+    if (argc == 2)
+    {
+        if (!is_numeric(context->argv[1]))
+        {
+            ft_printf("exit: %s: numeric argument required\n", context->argv[1]);
+            exit(2);
+        }
+        code = ft_atol(context->argv[1]) & 0xFF;
+    }
+    else
+        code = context->status & 0xFF;
+    exit(code);
+}
