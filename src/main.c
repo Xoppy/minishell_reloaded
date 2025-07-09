@@ -6,7 +6,7 @@
 /*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 19:01:55 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:07:28 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ int main(int argc, char **argv, char **envp)
         tokens = lexer_split_tokens(line);
         if (tokens)
         {
+            expand_tokens(tokens, env_list, status);
             ast = parser_build_ast(tokens);
             if (ast)
             {

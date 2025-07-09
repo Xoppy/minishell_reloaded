@@ -6,7 +6,7 @@
 /*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:35:48 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 18:45:40 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:51:54 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ int builtin_unset(t_exec *context)
         if (context->argv[i][0] == 0 || (!ft_isalpha(context->argv[i][0])
             && context->argv[i][0] != '_'))
         {
-            ft_printf("unset: `%s'; bit a valid identifier\n", context->argv[i]);
+            ft_printf("unset: `%s': not a valid identifier\n", context->argv[i]);
             status = 1;
         }
         else

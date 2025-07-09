@@ -49,6 +49,7 @@ SRCS       := \
 	src/utils/env_utils.c \
 	src/utils/heredoc_utils.c \
 	src/utils/path_utils.c \
+	src/utils/expansions.c \
 	src/signals.c
 
 

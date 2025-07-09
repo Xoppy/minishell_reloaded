@@ -6,20 +6,23 @@
 /*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 19:12:19 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:30:19 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int  exec_builtin_cmd(char **argv, t_envi *env_list)
+static int  exec_builtin_cmd(char **argv, t_envi **env_list)
 {
     t_exec  context;
+    int result;
 
     context.argv = argv;
-    context.env = env_list;
+    context.env = *env_list;
     context.status = 0;
-    return (executor_run_builtin(&context));
+    result = executor_run_builtin(&context);
+    *env_list = context.env;
+    return (result);
 }
 
 // Note that WEXITSTATUS and WIFEXITED are not functions but macros
@@ -67,7 +70,7 @@ static int  exec_simple_cmd(t_tree *node, t_envi **env_list)
     if (!argv)
         return (1);
     if (executor_is_builtin(argv[0]))
-        status = exec_builtin_cmd(argv, *env_list);
+        status = exec_builtin_cmd(argv, env_list);
     else
         status = exec_external_cmd(argv, env_list);
     ft_free_string_array(argv);

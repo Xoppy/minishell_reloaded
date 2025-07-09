@@ -6,7 +6,7 @@
 /*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 19:10:00 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 13:45:01 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ int executor_is_builtin(const char *command_name);
 int executor_run_builtin(t_exec *context);
 int exec_pipe_node(t_tree *node, t_envi **env_list);
 int exec_redirect_node(t_tree *node, t_envi **env_list);
-int	get_heredoc_fd(const char *delimiter);
+int	get_heredoc_fd(char *delimiter, t_envi *env_list);
 
 // builtins
 int builtin_cd(t_exec *context);
@@ -127,6 +127,10 @@ size_t	ft_arr_count(char **arr);
 
 // path
 char    *find_in_path(const char *cmd, t_envi *env_list);
+
+// expansion
+char    *expand_token(const char *token, t_envi *env_list, int last_status);
+void    expand_tokens(char **tokens, t_envi *env_list, int last_status);
 
 // signals
 void    signal_init(void);
