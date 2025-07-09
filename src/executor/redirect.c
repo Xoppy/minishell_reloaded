@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 13:49:01 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:25:42 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,19 +51,23 @@ static int	redirect_out(t_tree *node, t_envi **env_list, int flags)
 	file_fd = open(node->right->content, flags, 0644);
 	if (file_fd < 0)
 	{
-		print_error("minishell: cannot open file\n");
+		ft_printf("minishell: %s: %s\n",
+			node->right->content, strerror(errno));
 		close(saved_stdout);
 		return (1);
 	}
 	if (dup2(file_fd, STDOUT_FILENO) < 0)
 	{
 		close(file_fd);
-		restore_fd(saved_stdout, STDOUT_FILENO);
+		ft_printf("minishell: %s\n", strerror(errno));
+		dup2(saved_stdout, STDOUT_FILENO);
+		close(saved_stdout);
 		return (1);
 	}
 	close(file_fd);
 	status = executor_execute_ast(node->left, env_list);
-	restore_fd(saved_stdout, STDOUT_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdout);
 	return (status);
 }
 
@@ -79,19 +83,23 @@ static int	redirect_in(t_tree *node, t_envi **env_list)
 	read_fd = open(node->right->content, O_RDONLY);
 	if (read_fd < 0)
 	{
-		print_error("minishell: cannot open file\n");
+		ft_printf("minishell: %s: %s\n",
+			node->right->content, strerror(errno));
 		close(saved_stdin);
 		return (1);
 	}
 	if (dup2(read_fd, STDIN_FILENO) < 0)
 	{
 		close(read_fd);
-		restore_fd(saved_stdin, STDIN_FILENO);
+		ft_printf("minishell: %s\n", strerror(errno));
+		dup2(saved_stdin, STDIN_FILENO);
+		close(saved_stdin);
 		return (1);
 	}
 	close(read_fd);
 	status = executor_execute_ast(node->left, env_list);
-	restore_fd(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdin, STDIN_FILENO);
+	close(saved_stdin);
 	return (status);
 }
 

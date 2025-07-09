@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:10:18 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 19:00:01 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:17:33 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,27 +56,27 @@ static int  prepend_node(t_envi **env_list, char *key, char **vals)
 
 static int  prepare_key_vals(const char *arg, char **key, char ***vals)
 {
-    char    *delim;
+    char	*delim;
 
-    delim = ft_strchr(arg, '=');
-    if (!delim)
-        return (0);
-    *key = ft_mini_strndup(arg, delim - arg);
-    if (!*key)
-        return (1);
-    if (!is_valid_name(*key))
-    {
-        ft_printf("export: `%s': not a valid identifier\n", *key);
-        free(*key);
-        return (-1);
-    }
-    *vals = ft_split(delim + 1, ':');
-    if (!*vals)
-    {
-        free(*key);
-        return (1);
-    }
-    return (2);
+	delim = ft_strchr(arg, '=');
+	if (!delim)
+		return (0);
+	*key = ft_mini_strndup(arg, delim - arg);
+	if (!*key)
+		return (1);
+	if (!is_valid_name(*key))
+	{
+		ft_printf("minishell: export: `%s': not a valid identifier\n", *key);
+		free(*key);
+		return (-1);
+	}
+	*vals = ft_split(delim + 1, ':');
+	if (!*vals)
+	{
+		free(*key);
+		return (1);
+	}
+	return (2);
 }
 
 int add_or_update(t_envi **env_list, const char *arg)

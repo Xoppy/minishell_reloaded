@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 13:30:19 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:16:49 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,37 +28,37 @@ static int  exec_builtin_cmd(char **argv, t_envi **env_list)
 // Note that WEXITSTATUS and WIFEXITED are not functions but macros
 static int  exec_external_cmd(char **argv, t_envi **env_list)
 {
-    char    **envp;
-    char    *path;
-    pid_t   pid;
-    int     status;
+	char	**envp;
+	char	*path;
+	pid_t	pid;
+	int		status;
 
-    pid = fork();
-    if (pid < 0)
-        return (1);
-    if (pid == 0)
-    {
-        envp = env_list_to_array(*env_list);
-        if (ft_strchr(argv[0], '/'))
-            path = ft_strdup(argv[0]);
-        else
-            path = find_in_path(argv[0], *env_list);
-        if (!path)
-        {
-            ft_printf("%s: command not found\n", argv[0]);
-            ft_free_string_array(envp);
-            exit(127);
-        }
-        execve(path, argv, envp);
-        perror("execve");
-        free(path);
-        ft_free_string_array(envp);
-        exit(126);
-    }
-    waitpid(pid, &status, 0);
-    if (WIFEXITED(status))
-        return (WEXITSTATUS(status));
-    return (1);
+	pid = fork();
+	if (pid < 0)
+		return (1);
+	if (pid == 0)
+	{
+		envp = env_list_to_array(*env_list);
+		if (ft_strchr(argv[0], '/'))
+			path = ft_strdup(argv[0]);
+		else
+			path = find_in_path(argv[0], *env_list);
+		if (!path)
+		{
+			ft_printf("minishell: %s: command not found\n", argv[0]);
+			ft_free_string_array(envp);
+			exit(127);
+		}
+		execve(path, argv, envp);
+		ft_printf("minishell: %s: %s\n", argv[0], strerror(errno));
+		free(path);
+		ft_free_string_array(envp);
+		exit(126);
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (1);
 }
 
 static int  exec_simple_cmd(t_tree *node, t_envi **env_list)

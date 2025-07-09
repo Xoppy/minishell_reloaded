@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:35:48 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 13:51:54 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/09 16:17:48 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,24 +37,26 @@ static void remove_env_entry(t_envi **env_list, char *name)
     }
 }
 
-int builtin_unset(t_exec *context)
+int	builtin_unset(t_exec *context)
 {
-    int i;
-    int status;
+	int	i;
+	int	status;
 
-    i = 1;
-    status = 0;
-    while (context->argv[i])
-    {
-        if (context->argv[i][0] == 0 || (!ft_isalpha(context->argv[i][0])
-            && context->argv[i][0] != '_'))
-        {
-            ft_printf("unset: `%s': not a valid identifier\n", context->argv[i]);
-            status = 1;
-        }
-        else
-            remove_env_entry(&context->env, context->argv[i]);
-        i++;
-    }
-    return (status);
+	i = 1;
+	status = 0;
+	while (context->argv[i])
+	{
+		if (context->argv[i][0] == '\0'
+			|| (!ft_isalpha(context->argv[i][0])
+				&& context->argv[i][0] != '_'))
+		{
+			ft_printf("minishell: unset: `%s': not a valid identifier\n",
+				context->argv[i]);
+			status = 1;
+		}
+		else
+			remove_env_entry(&context->env, context->argv[i]);
+		i++;
+	}
+	return (status);
 }
