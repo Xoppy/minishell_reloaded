@@ -6,7 +6,7 @@
 /*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:43:03 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 16:16:21 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:39:17 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,16 +71,20 @@ static char	*determine_target(const char *arg, t_envi *env_list, char **oldpwd_p
 	return ((char *)arg);
 }
 
-static void	update_pwd_env(t_envi *env_list, char *prev_pwd)
+static void	update_pwd_env(t_envi **env_list, char *oldpwd)
 {
 	char	*cwd;
 
-	if (prev_pwd)
-		set_env_value(env_list, "OLDPWD", prev_pwd);
+	if (oldpwd)
+	{
+		if (set_env_value(*env_list, "OLDPWD", oldpwd))
+			cd_add_env(env_list, "OLDPWD", oldpwd);
+	}
 	cwd = getcwd(NULL, 0);
 	if (cwd)
 	{
-		set_env_value(env_list, "PWD", cwd);
+		if (set_env_value(*env_list, "PWD", cwd))
+			cd_add_env(env_list, "PWD", cwd);
 		free(cwd);
 	}
 }
@@ -111,6 +115,6 @@ int	builtin_cd(t_exec *context)
 		ft_printf("minishell: cd: %s: %s\n", target, strerror(errno));
 		return (1);
 	}
-	update_pwd_env(context->env, oldpwd);
+	update_pwd_env(&context->env, oldpwd);
 	return (0);
 }

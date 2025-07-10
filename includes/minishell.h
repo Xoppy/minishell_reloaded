@@ -6,7 +6,7 @@
 /*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 16:19:53 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 10:38:24 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ int builtin_export(t_exec *context);
 int builtin_unset(t_exec *context);
 int builtin_pwd(t_exec *context);
 int builtin_exit(t_exec *context);
+int cd_add_env(t_envi **env_list, char *key, char *value);
 
 // utils
 int  is_valid_name(const char *name);

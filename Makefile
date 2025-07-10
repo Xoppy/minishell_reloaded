@@ -34,6 +34,7 @@ SRCS       := \
 	src/executor/pipe.c \
 	src/executor/redirect.c \
 	src/builtins/cd.c \
+	src/builtins/cd_utils.c \
 	src/builtins/echo.c \
 	src/builtins/env.c \
 	src/builtins/export.c \
