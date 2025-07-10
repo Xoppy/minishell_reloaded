@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 13:21:05 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:29:14 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,16 @@ static char	*get_env_str(char *key, t_envi *env_list)
 	return (ft_strdup(""));
 }
 
-static char	*append_str(char *original, const char *addition)
+static char	*append_str(char *origin, const char *to_add)
 {
-	char	*new_string;
+    char *joined;
 
-	new_string = ft_strjoin(original, addition);
-	free(original);
-	return (new_string);
+    if (!origin)
+        joined = ft_strdup(to_add);
+    else
+        joined = ft_strjoin(origin, to_add);
+    free(origin);
+    return (joined);
 }
 
 static char	*handle_dollar(const char **cursor, t_envi *env_list,
@@ -73,40 +76,29 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 	const char	*cursor;
 	char		*result;
 	char		*fragment;
-	int			in_single_quote;
-	int			in_double_quote;
+	int			in_single;
+	int			in_double;
 
-	result = ft_strdup("");
-	cursor = token;
-	in_single_quote = 0;
-	in_double_quote = 0;
+	cursor    = token;
+	result    = NULL;
+	in_single = 0;
+	in_double = 0;
 	while (*cursor)
 	{
-		if (*cursor == '\'' && in_double_quote == 0)
+		if (toggle_quotes(*cursor, &in_single, &in_double))
 		{
-			in_single_quote = !in_single_quote;
 			cursor++;
+			continue;
 		}
-		else if (*cursor == '"' && in_single_quote == 0)
-		{
-			in_double_quote = !in_double_quote;
-			cursor++;
-		}
-		else if (*cursor == '$' && in_single_quote == 0 && cursor[1] != '\0')
-		{
+		if (*cursor == '$' && !in_single && cursor[1] != '\0')
 			fragment = handle_dollar(&cursor, env_list, last_status);
-			result = append_str(result, fragment);
-			free(fragment);
-		}
 		else
 		{
-			char	temp_str[2];
-
-			temp_str[0] = *cursor;
-			temp_str[1] = '\0';
-			result = append_str(result, temp_str);
+			fragment = ft_mini_strndup(cursor, 1);
 			cursor++;
 		}
+		result = append_str(result, fragment);
+		free(fragment);
 	}
 	return (result);
 }

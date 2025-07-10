@@ -51,6 +51,7 @@ SRCS       := \
 	src/utils/heredoc_utils.c \
 	src/utils/path_utils.c \
 	src/utils/expansions.c \
+	src/utils/expansions_utils.c \
 	src/signals.c
 
 

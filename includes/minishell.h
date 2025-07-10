@@ -6,7 +6,7 @@
 /*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 10:38:24 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:26:31 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,6 +133,7 @@ char    *find_in_path(const char *cmd, t_envi *env_list);
 // expansion
 char    *expand_token(const char *token, t_envi *env_list, int last_status);
 void    expand_tokens(char **tokens, t_envi *env_list, int last_status);
+int	toggle_quotes(char c, int *in_single, int *in_double);
 
 // signals
 void    signal_init(void);

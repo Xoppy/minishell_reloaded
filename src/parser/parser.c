@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:24:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 18:34:45 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:31:26 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,9 +72,10 @@ static int  find_token(char **tokens, int start, int end,
 void    parser_free_ast(t_tree *node)
 {
     if (!node)
-        return ;
+        return;
     parser_free_ast(node->left);
     parser_free_ast(node->right);
-    free(node->content);
+    if (node->content)
+        free(node->content);
     free(node);
 }

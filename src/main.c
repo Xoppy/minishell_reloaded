@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 13:07:28 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/10 11:32:38 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,5 +45,6 @@ int main(int argc, char **argv, char **envp)
         free(line);
     }
     env_destroy(env_list);
+    rl_clear_history();
     return (status);
 }
