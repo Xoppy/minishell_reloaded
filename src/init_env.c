@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:38:04 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 18:59:54 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:08:36 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void    env_init(t_envi **shell, char **envp)
             if(!current)
                 break ;
             current->env = entry;
+            current->should_exit = 0;
             current->prev = NULL;
             current->next = head;
             if (head)

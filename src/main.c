@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 11:32:38 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:12:19 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,8 @@ int main(int argc, char **argv, char **envp)
             ft_free_string_array(tokens);
         }
         free(line);
+        if (env_list->should_exit == 1)
+            break;
     }
     env_destroy(env_list);
     rl_clear_history();

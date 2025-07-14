@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:45:55 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 11:20:05 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:11:41 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,13 @@ int	builtin_exit(t_exec *context)
 		{
 			ft_printf("minishell: exit: %s: numeric argument required\n",
 				context->argv[1]);
-			env_destroy(context->env);
-			exit(2);
+			context->env->should_exit = 1;
+			return(2);
 		}
 		code = ft_atol(context->argv[1]) & 0xFF;
 	}
 	else
 		code = context->status & 0xFF;
-	env_destroy(context->env);
-	exit(code);
+	context->env->should_exit = 1;
+	return(code);
 }

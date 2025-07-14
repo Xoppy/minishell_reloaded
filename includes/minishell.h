@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 11:26:31 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 13:07:17 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ typedef struct  s_envp
 typedef struct s_envi
 {
     t_envp      *env;
+    int should_exit;
     struct s_envi   *prev;
     struct s_envi   *next;
 }   t_envi;
