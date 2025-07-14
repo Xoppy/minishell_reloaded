@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 15:58:38 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:16:02 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,11 @@ static char	*get_env_str(char *key, t_envi *env_list)
 
 static char *append_str(char *origin, char *to_add)
 {
+	char *joined;
+
     if (!origin)
         return to_add;     // just return fragment, don’t strdup()
-    char *joined = ft_strjoin(origin, to_add);
+    joined = ft_strjoin(origin, to_add);
     free(origin);
     free(to_add);
     return joined;

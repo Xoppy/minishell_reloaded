@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 15:55:14 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/14 16:16:03 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ int main(int argc, char **argv, char **envp)
         {
             expand_tokens(tokens, env_list, status);
             ast = parser_build_ast(tokens);
+            ft_free_string_array(tokens);
             if (ast)
             {
                 status = executor_execute_ast(ast, &env_list);
                 parser_free_ast(ast);
             }
-            ft_free_string_array(tokens);
             tokens = NULL;
         }
         free(line);
