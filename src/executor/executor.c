@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 16:16:49 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:55:15 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int  exec_external_cmd(char **argv, t_envi **env_list)
 		{
 			ft_printf("minishell: %s: command not found\n", argv[0]);
 			ft_free_string_array(envp);
-			exit(127);
+			return(127);
 		}
 		execve(path, argv, envp);
 		ft_printf("minishell: %s: %s\n", argv[0], strerror(errno));

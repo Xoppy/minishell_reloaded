@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 11:29:14 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/14 15:58:38 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,16 +27,14 @@ static char	*get_env_str(char *key, t_envi *env_list)
 	return (ft_strdup(""));
 }
 
-static char	*append_str(char *origin, const char *to_add)
+static char *append_str(char *origin, char *to_add)
 {
-    char *joined;
-
     if (!origin)
-        joined = ft_strdup(to_add);
-    else
-        joined = ft_strjoin(origin, to_add);
+        return to_add;     // just return fragment, don’t strdup()
+    char *joined = ft_strjoin(origin, to_add);
     free(origin);
-    return (joined);
+    free(to_add);
+    return joined;
 }
 
 static char	*handle_dollar(const char **cursor, t_envi *env_list,
@@ -98,7 +96,6 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 			cursor++;
 		}
 		result = append_str(result, fragment);
-		free(fragment);
 	}
 	return (result);
 }

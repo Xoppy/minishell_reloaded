@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 13:12:19 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/14 15:55:14 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,11 +41,14 @@ int main(int argc, char **argv, char **envp)
                 parser_free_ast(ast);
             }
             ft_free_string_array(tokens);
+            tokens = NULL;
         }
         free(line);
         if (env_list->should_exit == 1)
             break;
     }
+    if (tokens)
+        ft_free_string_array(tokens);
     env_destroy(env_list);
     rl_clear_history();
     return (status);
