@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:36:32 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 18:38:01 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/16 16:12:14 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,22 @@ t_tree  *new_node(const char *content)
 
     node = malloc(sizeof(t_tree) * 1);
     if (!node)
+	{
         return (NULL);
-    node->content  = ft_strdup(content);
-    node->left = NULL;
+	}
+	node->content = ft_strdup(content);
+	if (!node->content)
+	{
+		free(node);
+		return (NULL);
+	}
+	node->left = NULL;
     node->right = NULL;
     node->heredoc_fd = -1;
     node->start = -1;
     node->end = -1;
-    return (node);
+	printf("[LOOP %d][AST] new_node(%s) @ %p\n",g_loop_id, content, (void*)node);
+	return (node);
 }
 
 t_tree	*make_command_node(char **tokens, int start, int end)

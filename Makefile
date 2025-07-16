@@ -1,13 +1,13 @@
 # ================================
 #          Project Makefile
 # ================================
-  
+
 # Target executable
 NAME       := minishell
 
 # Compiler & flags
 CC         := gcc
-CFLAGS     := -Wall -Wextra -Werror
+CFLAGS     := -Wall -Wextra -Werror -g
 
 # Directories
 SRCDIR     := .
@@ -54,8 +54,7 @@ SRCS       := \
 	src/utils/expansions_utils.c \
 	src/signals.c
 
-
-# Object files (mirror SRCS with .o)
+# Object files
 OBJS       := $(SRCS:.c=.o)
 
 # Static libraries
@@ -65,42 +64,38 @@ PRINTFLIB  := $(PRINTFDIR)/libftprintf.a
 # Linker flags: readline & ncurses
 LDLIBS     := -lreadline -lncurses
 
-# ----------------
-#        Rules
-# ----------------
-
 .PHONY: all clean fclean re
 
 all: $(LIBFT) $(PRINTFLIB) $(NAME)
 
-# Link step: shell + libft + ft_printf + readline/ncurses
+# Build the final executable
 $(NAME): $(OBJS)
-	@echo "Linking $(NAME)..."
+	@echo "Linking $(NAME)…"
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) $(PRINTFLIB) $(LDLIBS) -o $@
 
-# Build your libft (the core library)
+# Build libft
 $(LIBFT):
-	@echo "Building libft..."
+	@echo "Building libft…"
 	$(MAKE) -C $(LIBFTDIR)
 
-# Build ft_printf static lib
+# Build ft_printf
 $(PRINTFLIB):
-	@echo "Building ft_printf..."
+	@echo "Building ft_printf…"
 	$(MAKE) -C $(PRINTFDIR)
 
 # Compile each .c → .o
 %.o: %.c
-	@echo "Compiling $<..."
+	@echo "Compiling $<…"
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 clean:
-	@echo "Cleaning object files..."
+	@echo "Cleaning object files…"
 	rm -f $(OBJS)
 	$(MAKE) -C $(LIBFTDIR) clean
 	$(MAKE) -C $(PRINTFDIR) clean
 
 fclean: clean
-	@echo "Removing binaries and libraries..."
+	@echo "Removing binaries and libraries…"
 	rm -f $(NAME)
 	rm -f $(LIBFT)
 	rm -f $(PRINTFLIB)

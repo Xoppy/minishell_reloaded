@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 13:07:17 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:35:32 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@
 
 // Global used for signals
 extern int  g_sig;
+extern int   g_loop_id;
 
 // Environment variable structure
 typedef struct  s_envp

@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 16:16:03 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/16 16:00:44 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ static int  exec_external_cmd(char **argv, t_envi **env_list)
 		{
 			ft_printf("minishell: %s: command not found\n", argv[0]);
 			ft_free_string_array(envp);
-			return(127);
+			exit(127);
 		}
 		execve(path, argv, envp);
 		ft_printf("minishell: %s: %s\n", argv[0], strerror(errno));
