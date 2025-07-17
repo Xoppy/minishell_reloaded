@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/16 16:35:32 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:35:47 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@
 extern int  g_sig;
 extern int   g_loop_id;
 
+
+
 // Environment variable structure
 typedef struct  s_envp
 {
@@ -53,7 +55,6 @@ typedef struct  s_envp
 typedef struct s_envi
 {
     t_envp      *env;
-    int should_exit;
     struct s_envi   *prev;
     struct s_envi   *next;
 }   t_envi;
@@ -72,20 +73,31 @@ typedef struct s_tree
 // Execution context structure
 typedef struct s_exec
 {
-    char    **tokens;
     char    **argv;
-    char    *program;
     int status;
     t_envi  *env;
     t_tree  *ast;
 }   t_exec;
 
+// global memory structure
+typedef struct s_memory
+{
+    t_envi *envi;
+    t_tree *tree;
+    t_exec *exec;
+    char *line;
+    char **tokens;
+    int status;
+}   t_memory;
+
 // init_env
 void    env_init(t_envi **shell, char **envp);
+void shell_envi_init(t_memory **shell, char **envp);
 void    env_destroy(t_envi *shell);
 
 // memory
 void    ft_free_string_array(char **arr);
+void ft_free_shell(t_memory **shell);
 
 // prompt
 char    *prompt_read_line(const char *prompt_fmt);
@@ -94,7 +106,7 @@ char    *prompt_read_line(const char *prompt_fmt);
 char    **lexer_split_tokens(const char *input_line);
 
 // parser
-t_tree  *parser_build_ast(char **tokens);
+t_tree  *parser_build_ast(t_memory **shell);
 void    parser_free_ast(t_tree *root);
 int is_pipe(char *s);
 int is_redirect(char *s);
@@ -102,11 +114,11 @@ t_tree  *new_node(const char *content);
 t_tree  *make_command_node(char **tokens, int start, int end);
 
 // executor
-int executor_execute_ast(t_tree *root, t_envi **env_list);
+int executor_execute_ast(t_tree *node, t_memory **shell);
 int executor_is_builtin(const char *command_name);
-int executor_run_builtin(t_exec *context);
-int exec_pipe_node(t_tree *node, t_envi **env_list);
-int exec_redirect_node(t_tree *node, t_envi **env_list);
+int executor_run_builtin(t_exec *context, t_memory **shell);
+int exec_pipe_node(t_memory **shell, t_tree *node);
+int exec_redirect_node(t_tree *node, t_memory **shell);
 int	get_heredoc_fd(char *delimiter, t_envi *env_list);
 
 // builtins
@@ -116,7 +128,7 @@ int builtin_env(t_exec *context);
 int builtin_export(t_exec *context);
 int builtin_unset(t_exec *context);
 int builtin_pwd(t_exec *context);
-int builtin_exit(t_exec *context);
+int	builtin_exit(t_exec *context, t_memory **shell);
 int cd_add_env(t_envi **env_list, char *key, char *value);
 
 // utils
@@ -134,7 +146,7 @@ char    *find_in_path(const char *cmd, t_envi *env_list);
 
 // expansion
 char    *expand_token(const char *token, t_envi *env_list, int last_status);
-void    expand_tokens(char **tokens, t_envi *env_list, int last_status);
+void	expand_tokens(t_memory **shell);
 int	toggle_quotes(char c, int *in_single, int *in_double);
 
 // signals

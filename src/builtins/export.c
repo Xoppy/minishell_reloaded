@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:10:18 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/16 14:57:01 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:42:04 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ static int  prepend_node(t_envi **env_list, char *key, char **vals)
     }
     node->env->key = key;
     node->env->values = vals;
-    node->should_exit = 0;
     node->prev = NULL;
     node->next = *env_list;
     if (*env_list)

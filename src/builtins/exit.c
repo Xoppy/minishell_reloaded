@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:45:55 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 13:11:41 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:10:53 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static int	is_numeric(const char *s)
 	return (1);
 }
 
-int	builtin_exit(t_exec *context)
+int	builtin_exit(t_exec *context, t_memory **shell)
 {
 	int	argc;
 	long	code;
@@ -39,7 +39,8 @@ int	builtin_exit(t_exec *context)
 	if (argc > 2)
 	{
 		ft_printf("minishell: exit: too many arguments\n");
-		return (1);
+		ft_free_shell(shell);
+		exit(1);
 	}
 	if (argc == 2)
 	{
@@ -47,13 +48,13 @@ int	builtin_exit(t_exec *context)
 		{
 			ft_printf("minishell: exit: %s: numeric argument required\n",
 				context->argv[1]);
-			context->env->should_exit = 1;
-			return(2);
+			ft_free_shell(shell);
+			exit(2);
 		}
 		code = ft_atol(context->argv[1]) & 0xFF;
 	}
 	else
 		code = context->status & 0xFF;
-	context->env->should_exit = 1;
-	return(code);
+	ft_free_shell(shell);
+	exit(code);
 }

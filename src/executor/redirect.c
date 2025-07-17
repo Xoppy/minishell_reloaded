@@ -3,33 +3,33 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 16:25:42 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/17 18:41:42 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	redirect_out(t_tree *node, t_envi **env_list, int flags);
-static int	redirect_in(t_tree *node, t_envi **env_list);
-static int	redirect_heredoc(t_tree *node, t_envi **env_list);
+static int	redirect_out(t_tree *node,t_memory **shell, int flags);
+static int	redirect_in(t_tree *node, t_memory **shell);
+static int	redirect_heredoc(t_tree *node, t_memory **shell);
 
-int exec_redirect_node(t_tree *node, t_envi **env_list)
+int exec_redirect_node(t_tree *node, t_memory **shell)
 {
     if (!node || !node->content)
         return (1);
     if (ft_strcmp(node->content, ">") == 0)
-        return (redirect_out(node, env_list,
+        return (redirect_out(node, shell,
                             O_WRONLY | O_CREAT | O_TRUNC));
     if (ft_strcmp(node->content, ">>") == 0)
-        return (redirect_out(node, env_list,
+        return (redirect_out(node, shell,
                             O_WRONLY | O_CREAT | O_APPEND));
     if (ft_strcmp(node->content, "<") == 0)
-            return (redirect_in(node, env_list));
+            return (redirect_in(node, shell));
     if (ft_strcmp(node->content, "<<") == 0)
-            return (redirect_heredoc(node, env_list));
+            return (redirect_heredoc(node, shell));
     return (1);
 }
 
@@ -39,7 +39,7 @@ static void	restore_fd(int saved_fd, int target_fd)
 	close(saved_fd);
 }
 
-static int	redirect_out(t_tree *node, t_envi **env_list, int flags)
+static int	redirect_out(t_tree *node,t_memory **shell, int flags)
 {
 	int	saved_stdout;
 	int	file_fd;
@@ -65,13 +65,13 @@ static int	redirect_out(t_tree *node, t_envi **env_list, int flags)
 		return (1);
 	}
 	close(file_fd);
-	status = executor_execute_ast(node->left, env_list);
+	status = executor_execute_ast(node->left, shell);
 	dup2(saved_stdout, STDOUT_FILENO);
 	close(saved_stdout);
 	return (status);
 }
 
-static int	redirect_in(t_tree *node, t_envi **env_list)
+static int	redirect_in(t_tree *node, t_memory **shell)
 {
 	int	saved_stdin;
 	int	read_fd;
@@ -97,18 +97,20 @@ static int	redirect_in(t_tree *node, t_envi **env_list)
 		return (1);
 	}
 	close(read_fd);
-	status = executor_execute_ast(node->left, env_list);
+	status = executor_execute_ast(node->left, shell);
 	dup2(saved_stdin, STDIN_FILENO);
 	close(saved_stdin);
 	return (status);
 }
 
-static int	redirect_heredoc(t_tree *node, t_envi **env_list)
+static int	redirect_heredoc(t_tree *node, t_memory **shell)
 {
 	int	saved_stdin;
 	int	heredoc_fd;
 	int	status;
+	t_envi **env_list;
 
+	env_list = &(*shell)->envi;
 	saved_stdin = dup(STDIN_FILENO);
 	if (saved_stdin < 0)
 		return (1);
@@ -125,7 +127,7 @@ static int	redirect_heredoc(t_tree *node, t_envi **env_list)
 		return (1);
 	}
 	close(heredoc_fd);
-	status = executor_execute_ast(node->left, env_list);
+	status = executor_execute_ast(node->left, shell);
 	restore_fd(saved_stdin, STDIN_FILENO);
 	return (status);
 }

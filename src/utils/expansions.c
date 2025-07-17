@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 16:16:02 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 16:51:39 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,11 +102,17 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 	return (result);
 }
 
-void	expand_tokens(char **tokens, t_envi *env_list, int last_status)
+void	expand_tokens(t_memory **shell)
 {
 	int		index;
 	char	*expanded;
+	char **tokens;
+	t_envi *env_list;
+	int last_status;
 
+	tokens = (*shell)->tokens;
+	env_list = (*shell)->envi;
+	last_status = (*shell)->status;
 	index = 0;
 	while (tokens[index])
 	{

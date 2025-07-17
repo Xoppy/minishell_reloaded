@@ -1,67 +1,54 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/16 16:41:04 by ituriel          ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
+    /* ************************************************************************** */
+    /*                                                                            */
+    /*                                                        :::      ::::::::   */
+    /*   main.c                                             :+:      :+:    :+:   */
+    /*                                                    +:+ +:+         +:+     */
+    /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+    /*                                                +#+#+#+#+#+   +#+           */
+    /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
+    /*   Updated: 2025/07/17 18:36:34 by ituriel          ###   ########.fr       */
+    /*                                                                            */
+    /* ************************************************************************** */
 
-#include "../includes/minishell.h"
-#include <valgrind/valgrind.h>
+    #include "../includes/minishell.h"
 
+    int   g_loop_id = 0;
 
-int   g_loop_id = 0;
-
-int main(int argc, char **argv, char **envp)
-{
-    t_envi  *env_list;
-    char    *line;
-    char    **tokens;
-    t_tree  *ast;
-    int status;
-
-    (void)argc;
-    (void)argv;
-    signal_init();
-    status = 0;
-    env_init(&env_list, envp);
-    while (1)
+    int main(int argc, char **argv, char **envp)
     {
-        g_loop_id++;
-        printf("\n[LOOP %d] start\n", g_loop_id);
-        line = prompt_read_line("minishell$ ");
-        if(!line)
-            break ;
-        tokens = lexer_split_tokens(line);
-        if (tokens)
-        {
-            expand_tokens(tokens, env_list, status);
-            ast = parser_build_ast(tokens);
-            ft_free_string_array(tokens);
-            if (ast)
-            {
-                status = executor_execute_ast(ast, &env_list);
-                parser_free_ast(ast);
-                ast = NULL;
-                VALGRIND_DO_LEAK_CHECK;
-            }
-            tokens = NULL;
-        }
-        free(line);
-        if (env_list->should_exit == 1)
-        {
-            printf("[MAIN] got should_exit, breaking out of loop\n");
-            break;
-        }
+        t_memory *shell;
+        int status;
 
+        (void)argc;
+        (void)argv;
+        signal_init();
+        status = 0;
+        shell_envi_init(&shell, envp);
+        while (1)
+        {
+            g_loop_id++;
+            printf("\n[LOOP %d] start\n", g_loop_id);
+            shell->line = prompt_read_line("minishell$ ");
+            if(!shell->line)
+                break ;
+            shell->tokens = lexer_split_tokens(shell->line);
+            if (shell->tokens)
+            {
+                expand_tokens(&shell);
+                shell->tree = parser_build_ast(&shell);
+                ft_free_string_array(shell->tokens);
+                shell->tokens = NULL;
+                if (shell->tree)
+                {
+                    shell->status = executor_execute_ast(shell->tree, &shell);
+                    parser_free_ast(shell->tree);
+                }
+            }
+            free(shell->line);
+            shell->line = NULL;
+        }
+        status = shell->status;
+        ft_free_shell(&shell);
+        rl_clear_history();
+        return (status);
     }
-    if (tokens)
-        ft_free_string_array(tokens);
-    env_destroy(env_list);
-    rl_clear_history();
-    return (status);
-}

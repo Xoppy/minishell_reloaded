@@ -6,36 +6,42 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/16 16:00:44 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:40:46 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int  exec_builtin_cmd(char **argv, t_envi **env_list)
+static int  exec_builtin_cmd(char **argv, t_memory **shell)
 {
-    t_exec  context;
+    t_envi **env_list;
     int result;
 
-    context.argv = argv;
-    context.env = *env_list;
-    context.status = 0;
-    result = executor_run_builtin(&context);
-    *env_list = context.env;
+    env_list = &(*shell)->envi;
+    (*shell)->exec = malloc(sizeof(t_exec));
+    (*shell)->exec->argv = argv;
+    (*shell)->exec->env = (*env_list);
+    (*shell)->exec->status = 0;
+    result = executor_run_builtin((*shell)->exec, shell);
     return (result);
 }
 
 // Note that WEXITSTATUS and WIFEXITED are not functions but macros
-static int  exec_external_cmd(char **argv, t_envi **env_list)
+static int  exec_external_cmd(char **argv, t_memory **shell)
 {
 	char	**envp;
 	char	*path;
 	pid_t	pid;
 	int		status;
+    t_envi **env_list;
 
+    env_list = &(*shell)->envi;
 	pid = fork();
 	if (pid < 0)
-		return (1);
+    {
+        perror("fork");
+        return(1);
+    }
 	if (pid == 0)
 	{
 		envp = env_list_to_array(*env_list);
@@ -46,7 +52,7 @@ static int  exec_external_cmd(char **argv, t_envi **env_list)
 		if (!path)
 		{
 			ft_printf("minishell: %s: command not found\n", argv[0]);
-			ft_free_string_array(envp);
+            ft_free_string_array(envp);
 			exit(127);
 		}
 		execve(path, argv, envp);
@@ -61,31 +67,30 @@ static int  exec_external_cmd(char **argv, t_envi **env_list)
 	return (1);
 }
 
-static int  exec_simple_cmd(t_tree *node, t_envi **env_list)
+static int  exec_simple_cmd(t_tree *node, t_memory **shell)
 {
     char    **argv;
-    int     status;
 
     argv = ft_split(node->content, ' ');
     if (!argv)
         return (1);
     if (executor_is_builtin(argv[0]))
-        status = exec_builtin_cmd(argv, env_list);
+        (*shell)->status = exec_builtin_cmd(argv, shell);
     else
-        status = exec_external_cmd(argv, env_list);
+        (*shell)->status = exec_external_cmd(argv, shell);
     ft_free_string_array(argv);
-    return (status);
+    return ((*shell)->status);
 }
 
-int executor_execute_ast(t_tree *node, t_envi **env_list)
-{
+int executor_execute_ast(t_tree *node, t_memory **shell)
+{    
     if (!node)
         return (0);
     if (is_pipe(node->content))
-        return (exec_pipe_node(node, env_list));
+        return (exec_pipe_node(shell, node));
     if (is_redirect(node->content))
-        return (exec_redirect_node(node, env_list));
-    return (exec_simple_cmd(node, env_list));
+        return (exec_redirect_node(node, shell));
+    return (exec_simple_cmd(node, shell));
 }
 
 int executor_is_builtin(const char *cmd)
@@ -101,7 +106,7 @@ int executor_is_builtin(const char *cmd)
         || !strcmp(cmd, "exit"));
 }
 
-int executor_run_builtin(t_exec *context)
+int executor_run_builtin(t_exec *context, t_memory **shell)
 {
     if (!context || !context->argv || !context->argv[0])
         return (1);
@@ -118,6 +123,6 @@ int executor_run_builtin(t_exec *context)
     if (!strcmp(context->argv[0], "pwd"))
         return (builtin_pwd(context));
     if (!strcmp(context->argv[0], "exit"))
-        return (builtin_exit(context));
+        return (builtin_exit(context, shell));
     return (1);
 }

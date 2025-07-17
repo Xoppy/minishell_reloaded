@@ -6,17 +6,16 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:12:44 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/16 15:04:38 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:41:03 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static pid_t    fork_pipe_child(int *fd, t_tree *node, t_envi **env_list,
-                            int is_left)
+static pid_t    fork_pipe_child(int *fd, t_tree *node, t_memory **shell, int is_left)
 {
     pid_t   pid;
-
+    
     pid = fork();
     if (pid < 0)
         return (-1);
@@ -28,7 +27,7 @@ static pid_t    fork_pipe_child(int *fd, t_tree *node, t_envi **env_list,
             if (dup2(fd[1], STDOUT_FILENO) < 0)
                 exit(EXIT_FAILURE);
             close(fd[1]);
-            executor_execute_ast(node->left, env_list);
+            executor_execute_ast(node->left, shell);
         }
         else
         {
@@ -36,7 +35,7 @@ static pid_t    fork_pipe_child(int *fd, t_tree *node, t_envi **env_list,
             if (dup2(fd[0], STDIN_FILENO) < 0)
                 exit(EXIT_FAILURE);
             close(fd[0]);
-            executor_execute_ast(node->right, env_list);
+            executor_execute_ast(node->right, shell);
         }
         exit(EXIT_SUCCESS);
     }
@@ -64,7 +63,7 @@ static int  parent_waits(pid_t pid_left, pid_t pid_right, int *fd)
     return (1);
 }
 
-int exec_pipe_node(t_tree *node, t_envi **env_list)
+int exec_pipe_node(t_memory **shell, t_tree *node)
 {
     int fd[2];
     pid_t   pid_left;
@@ -75,10 +74,10 @@ int exec_pipe_node(t_tree *node, t_envi **env_list)
         print_error("minishell: pipe failed\n");
         return (1);
     }
-    pid_left = fork_pipe_child(fd, node, env_list, 1);
+    pid_left = fork_pipe_child(fd, node, shell, 1);
     if (pid_left < 0)
         return (fork_error(fd));
-    pid_right = fork_pipe_child(fd, node, env_list, 0);
+    pid_right = fork_pipe_child(fd, node, shell, 0);
     if (pid_right < 0)
         return(fork_error(fd));
     return (parent_waits(pid_left, pid_right, fd));

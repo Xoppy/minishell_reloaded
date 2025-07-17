@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:38:04 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/14 13:08:36 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/17 18:37:16 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,13 @@ static t_envp   *envp_create(char *entry)
     return (node);
 }
 
+void shell_envi_init(t_memory **shell, char **envp)
+{
+    *shell = malloc(sizeof(t_memory));
+    ft_memset(*shell, 0, sizeof(t_memory));
+    env_init(&(*shell)->envi, envp);
+}
+
 // Initialize the env list
 void    env_init(t_envi **shell, char **envp)
 {
@@ -59,7 +66,6 @@ void    env_init(t_envi **shell, char **envp)
             if(!current)
                 break ;
             current->env = entry;
-            current->should_exit = 0;
             current->prev = NULL;
             current->next = head;
             if (head)
