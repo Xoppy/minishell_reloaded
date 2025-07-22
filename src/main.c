@@ -42,6 +42,7 @@
                 {
                     shell->status = executor_execute_ast(shell->tree, &shell);
                     parser_free_ast(shell->tree);
+                    shell->tree = NULL;
                 }
             }
             free(shell->line);

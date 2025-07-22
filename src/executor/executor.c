@@ -3,26 +3,31 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/17 18:40:46 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/22 09:52:22 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+
 static int  exec_builtin_cmd(char **argv, t_memory **shell)
 {
-    t_envi **env_list;
-    int result;
+    t_envi **env_list = &(*shell)->envi;
+    int     result;
 
-    env_list = &(*shell)->envi;
     (*shell)->exec = malloc(sizeof(t_exec));
-    (*shell)->exec->argv = argv;
-    (*shell)->exec->env = (*env_list);
-    (*shell)->exec->status = 0;
+    if (!(*shell)->exec)
+        return (1);
+    (*shell)->exec->argv   = argv;
+    (*shell)->exec->env     = *env_list;
+    (*shell)->exec->status  = 0;
     result = executor_run_builtin((*shell)->exec, shell);
+    *env_list = (*shell)->exec->env;
+    free((*shell)->exec);
+    (*shell)->exec = NULL;
     return (result);
 }
 
