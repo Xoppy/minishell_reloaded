@@ -1,50 +1,56 @@
-    /* ************************************************************************** */
-    /*                                                                            */
-    /*                                                        :::      ::::::::   */
-    /*   main.c                                             :+:      :+:    :+:   */
-    /*                                                    +:+ +:+         +:+     */
-    /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
-    /*                                                +#+#+#+#+#+   +#+           */
-    /*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
-    /*   Updated: 2025/07/17 18:36:34 by ituriel          ###   ########.fr       */
-    /*                                                                            */
-    /* ************************************************************************** */
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/08 14:05:57 by adi-marc          #+#    #+#             */
+/*   Updated: 2025/07/22 13:22:09 by adi-marc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-    #include "../includes/minishell.h"
+#include "../includes/minishell.h"
 
-    int main(int argc, char **argv, char **envp)
+int main(int argc, char **argv, char **envp)
+{
+    t_memory *shell;
+    int       status;
+
+    (void)argc;
+    (void)argv;
+    signal_init();
+    status = 0;
+    shell_envi_init(&shell, envp);
+
+    while (1)
     {
-        t_memory *shell;
-        int status;
+        shell->line = prompt_read_line("minishell$ ");
+        if (!shell->line)
+            break;
 
-        (void)argc;
-        (void)argv;
-        signal_init();
-        status = 0;
-        shell_envi_init(&shell, envp);
-        while (1)
+        shell->tokens = lexer_split_tokens(shell->line);
+        if (shell->tokens)
         {
-            if(!shell->line)
-                break ;
-            shell->tokens = lexer_split_tokens(shell->line);
-            if (shell->tokens)
+            expand_tokens(&shell);
+            shell->tree = parser_build_ast(&shell);
+            ft_free_string_array(shell->tokens);
+            shell->tokens = NULL;
+
+            if (shell->tree)
             {
-                expand_tokens(&shell);
-                shell->tree = parser_build_ast(&shell);
-                ft_free_string_array(shell->tokens);
-                shell->tokens = NULL;
-                if (shell->tree)
-                {
-                    shell->status = executor_execute_ast(shell->tree, &shell);
-                    parser_free_ast(shell->tree);
-                    shell->tree = NULL;
-                }
+                shell->status = executor_execute_ast(shell->tree, &shell);
+                parser_free_ast(shell->tree);
+                shell->tree = NULL;
             }
-            free(shell->line);
-            shell->line = NULL;
         }
-        status = shell->status;
-        ft_free_shell(&shell);
-        rl_clear_history();
-        return (status);
+
+        free(shell->line);
+        shell->line = NULL;
     }
+
+    status = shell->status;
+    ft_free_shell(&shell);
+    rl_clear_history();
+    return (status);
+}
