@@ -12,8 +12,6 @@
 
     #include "../includes/minishell.h"
 
-    int   g_loop_id = 0;
-
     int main(int argc, char **argv, char **envp)
     {
         t_memory *shell;
@@ -26,9 +24,6 @@
         shell_envi_init(&shell, envp);
         while (1)
         {
-            g_loop_id++;
-            printf("\n[LOOP %d] start\n", g_loop_id);
-            shell->line = prompt_read_line("minishell$ ");
             if(!shell->line)
                 break ;
             shell->tokens = lexer_split_tokens(shell->line);

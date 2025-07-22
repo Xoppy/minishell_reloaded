@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:36:32 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/17 15:46:05 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/22 11:46:45 by cauffret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,6 @@ t_tree  *new_node(const char *content)
         return (NULL);
 	}
 	node->content = ft_strdup(content);
-	fprintf(stderr, "[DBG] new_node alloc @%p for \"%s\"\n", node, content);
 	if (!node->content)
 	{
 		free(node);
@@ -43,7 +42,6 @@ t_tree  *new_node(const char *content)
     node->heredoc_fd = -1;
     node->start = -1;
     node->end = -1;
-	printf("[LOOP %d][AST] new_node(%s) @ %p\n",g_loop_id, content, (void*)node);
 	return (node);
 }
 

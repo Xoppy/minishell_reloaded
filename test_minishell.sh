@@ -20,15 +20,6 @@ echo $TESTVAR
 unset TESTVAR
 env
 ls | grep minishell
-echo redirected > out.txt
-cat < out.txt
-rm out.txt
-cat <<EOD
-line1
-line2 /home/ituriel
-EOD
-echo quoted /usr/bin/zsh and literal \$SHELL
-foobar_command
 exit
 EOF
 

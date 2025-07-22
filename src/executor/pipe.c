@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:12:44 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/17 18:41:03 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/22 11:49:13 by cauffret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ static pid_t    fork_pipe_child(int *fd, t_tree *node, t_memory **shell, int is_
             close(fd[0]);
             executor_execute_ast(node->right, shell);
         }
+        ft_free_shell(shell);
         exit(EXIT_SUCCESS);
     }
     return (pid);
