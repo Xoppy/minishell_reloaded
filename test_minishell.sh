@@ -9,6 +9,7 @@ valgrind \
   --track-origins=yes \
   --verbose \
   --log-file=valgrind_log.txt \
+  --suppressions=readline.supp \
   --trace-children=no \
   ./minishell <<'EOF'
 echo Hello, world!

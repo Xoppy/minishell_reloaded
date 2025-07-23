@@ -31,8 +31,10 @@ SRCS       := \
 	src/parser/parser.c \
 	src/parser/parser_utils.c \
 	src/executor/executor.c \
+	src/executor/executor_utils.c \
 	src/executor/pipe.c \
 	src/executor/redirect.c \
+	src/executor/redirect_utils.c \
 	src/builtins/cd.c \
 	src/builtins/cd_utils.c \
 	src/builtins/echo.c \

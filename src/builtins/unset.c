@@ -12,29 +12,29 @@
 
 #include "../../includes/minishell.h"
 
-static void remove_env_entry(t_envi **env_list, char *name)
+static void	remove_env_entry(t_envi **env_list, char *name)
 {
-    t_envi  *curr;
+	t_envi	*curr;
 
-    curr = *env_list;
-    while(curr)
-    {
-        if (ft_strcmp(curr->env->key, name) == 0)
-        {
-            if (curr->prev)
-                curr->prev->next = curr->next;
-            else
-                *env_list = curr->next;
-            if (curr->next)
-                curr->next->prev = curr->prev;
-            free(curr->env->key);
-            ft_free_string_array(curr->env->values);
-            free(curr->env);
-            free(curr);
-            return ;
-        }
-        curr = curr->next;
-    }
+	curr = *env_list;
+	while (curr)
+	{
+		if (ft_strcmp(curr->env->key, name) == 0)
+		{
+			if (curr->prev)
+				curr->prev->next = curr->next;
+			else
+				*env_list = curr->next;
+			if (curr->next)
+				curr->next->prev = curr->prev;
+			free(curr->env->key);
+			ft_free_string_array(curr->env->values);
+			free(curr->env);
+			free(curr);
+			return ;
+		}
+		curr = curr->next;
+	}
 }
 
 int	builtin_unset(t_exec *context)
@@ -46,8 +46,7 @@ int	builtin_unset(t_exec *context)
 	status = 0;
 	while (context->argv[i])
 	{
-		if (context->argv[i][0] == '\0'
-			|| (!ft_isalpha(context->argv[i][0])
+		if (context->argv[i][0] == '\0' || (!ft_isalpha(context->argv[i][0])
 				&& context->argv[i][0] != '_'))
 		{
 			ft_printf("minishell: unset: `%s': not a valid identifier\n",

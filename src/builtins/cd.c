@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:43:03 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/10 10:39:17 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/23 12:19:22 by cauffret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,8 @@ static char	*get_env_value(t_envi *env_list, char *key)
 	current = env_list;
 	while (current)
 	{
-		if (!ft_strcmp(current->env->key, key)
-			&& current->env->values && current->env->values[0])
+		if (!ft_strcmp(current->env->key, key) && current->env->values
+			&& current->env->values[0])
 			return (current->env->values[0]);
 		current = current->next;
 	}
@@ -51,7 +51,8 @@ static int	set_env_value(t_envi *env_list, char *key, char *value)
 	return (1);
 }
 
-static char	*determine_target(const char *arg, t_envi *env_list, char **oldpwd_ptr)
+static char	*determine_target(const char *arg, t_envi *env_list,
+		char **oldpwd_ptr)
 {
 	char	*home;
 
@@ -99,16 +100,8 @@ int	builtin_cd(t_exec *context)
 	arg = context->argv[1];
 	oldpwd = get_env_value(context->env, "PWD");
 	target = determine_target(arg, context->env, &oldpwd);
-	if (!target)
-	{
-		ft_printf("minishell: cd: HOME not set\n");
+	if (error_cd(target) > 0)
 		return (1);
-	}
-	if (target == (char *)-1)
-	{
-		ft_printf("minishell: cd: OLDPWD not set\n");
-		return (1);
-	}
 	ret = chdir(target);
 	if (ret < 0)
 	{

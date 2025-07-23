@@ -1,6 +1,7 @@
 {
     "files.associations": {
         "valgrind.h": "c",
-        "minishell.h": "c"
+        "minishell.h": "c",
+        "random": "c"
     }
 }

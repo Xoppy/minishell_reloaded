@@ -12,18 +12,18 @@
 
 #include "../../includes/minishell.h"
 
-int builtin_pwd(t_exec *context)
+int	builtin_pwd(t_exec *context)
 {
-    char    *cwd;
+	char	*cwd;
 
-    (void)context;
-    cwd = getcwd(NULL, 0);
-    if (!cwd)
-    {
-        print_error("pwd: could not retrieve current directory\n");
-        return (1);
-    }
-    ft_printf("%s\n", cwd);
-    free(cwd);
-    return (0);
+	(void)context;
+	cwd = getcwd(NULL, 0);
+	if (!cwd)
+	{
+		print_error("pwd: could not retrieve current directory\n");
+		return (1);
+	}
+	ft_printf("%s\n", cwd);
+	free(cwd);
+	return (0);
 }

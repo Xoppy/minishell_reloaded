@@ -6,7 +6,7 @@
 /*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/22 11:49:29 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/23 13:17:26 by cauffret         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,7 +115,10 @@ int executor_execute_ast(t_tree *node, t_memory **shell);
 int executor_is_builtin(const char *command_name);
 int executor_run_builtin(t_exec *context, t_memory **shell);
 int exec_pipe_node(t_memory **shell, t_tree *node);
+void child_process(char **argv, t_memory **shell);
 int exec_redirect_node(t_tree *node, t_memory **shell);
+int redirect_out(t_tree *node, t_memory **shell, int flags);
+int	redirect_in(t_tree *node, t_memory **shell);
 int	get_heredoc_fd(char *delimiter, t_envi *env_list);
 
 // builtins
@@ -127,6 +130,7 @@ int builtin_unset(t_exec *context);
 int builtin_pwd(t_exec *context);
 int	builtin_exit(t_exec *context, t_memory **shell);
 int cd_add_env(t_envi **env_list, char *key, char *value);
+int error_cd(char *target);
 
 // utils
 int  is_valid_name(const char *name);
