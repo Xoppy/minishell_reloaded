@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/17 16:51:39 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/24 09:05:59 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,8 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 		}
 		result = append_str(result, fragment);
 	}
+	if (!result)
+		result = ft_mini_strndup("", 0);
 	return (result);
 }
 

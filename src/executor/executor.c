@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 12:59:49 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/24 08:53:48 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,13 +47,49 @@ static int	exec_external_cmd(char **argv, t_memory **shell)
 	return (1);
 }
 
+static int	check_cmd(char *cmd, t_memory **shell)
+{
+	char	*path;
+
+	if (executor_is_builtin(cmd))
+		return (0);
+	if (ft_strchr(cmd, '/'))
+	{
+		if (access(cmd, X_OK) == 0)
+			return (0);
+		write(2, "minishell: ", 11);
+		write(2, cmd, ft_strlen(cmd));
+		write(2, ": ", 2);
+		write(2, strerror(errno), ft_strlen(strerror(errno)));
+		write(2, "\n", 1);
+		return (1);
+	}
+	path = find_in_path(cmd, (*shell)->envi);
+	if (path)
+	{
+		free(path);
+		return (0);
+	}
+	write(2, "minishell: ", 11);
+	write(2, cmd, ft_strlen(cmd));
+	write(2, ": command not found\n", 20);
+	return (1);
+}
+
 static int	exec_simple_cmd(t_tree *node, t_memory **shell)
 {
 	char	**argv;
+	int		err;
 
 	argv = ft_split(node->content, ' ');
 	if (!argv)
 		return (1);
+	err = check_cmd(argv[0], shell);
+	if (err)
+	{
+		ft_free_string_array(argv);
+		return (127);
+	}
 	if (executor_is_builtin(argv[0]))
 		(*shell)->status = exec_builtin_cmd(argv, shell);
 	else
