@@ -6,7 +6,7 @@
 /*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 18:42:55 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/24 09:23:17 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/24 09:25:40 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,16 @@ static char	*heredoc_tmpfile(void)
 	return (path);
 }
 
-static void	write_heredoc_content(int write_fd, char *delimiter,
-									t_envi *env_list)
+static void	write_heredoc_content(int write_fd,
+								   char *delimiter,
+								   t_envi *env_list)
 {
+	FILE	*saved_out;
 	char	*line;
-	char	*expanded;
+	char	*exp;
 
+	saved_out      = rl_outstream;
+	rl_outstream   = stderr;
 	while (1)
 	{
 		line = readline("> ");
@@ -52,13 +56,13 @@ static void	write_heredoc_content(int write_fd, char *delimiter,
 			free(line);
 			break ;
 		}
-		/* expand $VAR inside the heredoc line */
-		expanded = expand_token(line, env_list, 0);
+		exp = expand_token(line, env_list, 0);
 		free(line);
-		write(write_fd, expanded, ft_strlen(expanded));
+		write(write_fd, exp, ft_strlen(exp));
 		write(write_fd, "\n", 1);
-		free(expanded);
+		free(exp);
 	}
+	rl_outstream = saved_out;
 }
 
 int	get_heredoc_fd(char *delimiter, t_envi *env_list)

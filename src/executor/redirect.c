@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 13:17:32 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/24 10:24:45 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,37 +29,64 @@ int	exec_redirect_node(t_tree *node, t_memory **shell)
 	return (1);
 }
 
-static void	restore_fd(int saved_fd, int target_fd)
+
+static int	read_heredoc_chain(t_tree *node, t_memory **shell)
 {
-	dup2(saved_fd, target_fd);
-	close(saved_fd);
+	int	prev_fd;
+	int	cur_fd;
+
+	if (node && ft_strcmp(node->content, "<<") == 0)
+	{
+		prev_fd = read_heredoc_chain(node->left, shell);
+		if (prev_fd < 0)
+			return (-1);
+		cur_fd = get_heredoc_fd(node->right->content, (*shell)->envi);
+		if (cur_fd < 0)
+		{
+			if (prev_fd > 0)
+				close(prev_fd);
+			return (-1);
+		}
+		if (prev_fd > 0)
+			close(prev_fd);
+		return (cur_fd);
+	}
+	return (0);
 }
 
 static int	redirect_heredoc(t_tree *node, t_memory **shell)
 {
-	int		saved_stdin;
+	int		saved_fd;
 	int		heredoc_fd;
+	t_tree	*cmd;
 	int		status;
-	t_envi	**env_list;
 
-	env_list = &(*shell)->envi;
-	saved_stdin = dup(STDIN_FILENO);
-	if (saved_stdin < 0)
+	saved_fd = dup(STDIN_FILENO);
+	if (saved_fd < 0)
 		return (1);
-	heredoc_fd = get_heredoc_fd(node->right->content, *env_list);
+	heredoc_fd = read_heredoc_chain(node, shell);
 	if (heredoc_fd < 0)
 	{
-		restore_fd(saved_stdin, STDIN_FILENO);
+		dup2(saved_fd, STDIN_FILENO);
+		close(saved_fd);
 		return (1);
 	}
-	if (dup2(heredoc_fd, STDIN_FILENO) < 0)
+	if (heredoc_fd > 0)
 	{
+		if (dup2(heredoc_fd, STDIN_FILENO) < 0)
+		{
+			close(heredoc_fd);
+			dup2(saved_fd, STDIN_FILENO);
+			close(saved_fd);
+			return (1);
+		}
 		close(heredoc_fd);
-		restore_fd(saved_stdin, STDIN_FILENO);
-		return (1);
 	}
-	close(heredoc_fd);
-	status = executor_execute_ast(node->left, shell);
-	restore_fd(saved_stdin, STDIN_FILENO);
+	cmd = node;
+	while (cmd && ft_strcmp(cmd->content, "<<") == 0)
+		cmd = cmd->left;
+	status = executor_execute_ast(cmd, shell);
+	dup2(saved_fd, STDIN_FILENO);
+	close(saved_fd);
 	return (status);
 }
