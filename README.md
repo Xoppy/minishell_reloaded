@@ -2,8 +2,6 @@ TO DO LIST :
 
 • error messages to std2 
 
-• grep a | echo "HAHAHAHHAHAHAAHAHHAHAAHAH" >> fhsaashgjahgfi CA BUG -------------- -> The file is created and contains the appended string but in BASH the terminal get stuck as well because of the bad command construction
-
 • minishell$ grep -r "lol" | ls CRASH QUAND LOL EXISTE PAS 
 
 • ls | grep "gigalol" > test.txt print bien gigalol dans test mais ls | grep "gigalol" > test.txt | wc -l devrait print 1 et print 0 (compte de ligne)
