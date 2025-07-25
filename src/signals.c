@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 18:11:03 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/08 18:57:53 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:25:56 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void    signal_init(void)
     struct sigaction    sa;
 
     sigemptyset(&sa.sa_mask);
-    sa.sa_flags = SA_RESTART;
+    sa.sa_flags = 0;
     sa.sa_handler = handle_sigint;
     sigaction(SIGINT, &sa, NULL);
     sa.sa_handler = handle_sigquit;

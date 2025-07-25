@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:12:44 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/24 09:56:33 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:40:23 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,8 @@ static pid_t	fork_pipe_child(int *fd, t_tree *node, t_memory **shell,
 		return (-1);
 	if (pid == 0)
 	{
+		signal(SIGINT,  SIG_DFL);
+		signal(SIGQUIT,  SIG_DFL);
 		if (is_left)
 			is_left_utils(fd, node, shell);
 		else
@@ -63,6 +65,9 @@ static int	parent_waits(pid_t pid_left, pid_t pid_right, int *fd)
 	close(fd[1]);
 	waitpid(pid_left, NULL, 0);
 	waitpid(pid_right, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+        write(STDOUT_FILENO, "\n", 1);
+	signal_init();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
@@ -74,6 +79,8 @@ int	exec_pipe_node(t_memory **shell, t_tree *node)
 	pid_t	pid_left;
 	pid_t	pid_right;
 
+	signal(SIGINT,  SIG_IGN);
+    signal(SIGQUIT, SIG_IGN);
 	if (pipe(fd) < 0)
 	{
 		print_error("minishell: pipe failed\n");

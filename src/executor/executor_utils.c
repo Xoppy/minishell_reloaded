@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 12:30:34 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/23 13:00:53 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:44:42 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,8 @@ void	child_process(char **argv, t_memory **shell)
 	char	**envp;
 	char	*path;
 
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	env_list = (*shell)->envi;
 	envp = env_list_to_array(env_list);
 	if (ft_strchr(argv[0], '/'))

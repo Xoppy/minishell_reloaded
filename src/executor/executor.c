@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/24 09:49:06 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/25 18:48:14 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,12 +36,24 @@ static int	exec_external_cmd(char **argv, t_memory **shell)
 	pid_t	pid;
 	int		status;
 
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 	pid = fork();
 	if (pid < 0)
+	{
+		signal_init();
 		return (perror("fork"), 1);
+	}
 	if (pid == 0)
+	{
+        signal(SIGINT,  SIG_DFL);
+        signal(SIGQUIT, SIG_DFL);
 		child_process(argv, shell);
+	}
 	waitpid(pid, &status, 0);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
++        write(STDERR_FILENO, "\n", 1);
+	signal_init();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);
