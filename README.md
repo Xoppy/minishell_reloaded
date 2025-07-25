@@ -3,6 +3,7 @@ TO DO LIST :
 • error messages to std2 
 
 • $USER quand l'env existe pas il pete un cable -> segfault
+il tente d'exécuter au lieu de juste afficher la variable mdrrr
 
 • <<EOF | echo crash 100 % DU TEMPS -------------- -> ça ne crash pas mais ça fait un saut de ligne avant d'afficher le heredoc
 
