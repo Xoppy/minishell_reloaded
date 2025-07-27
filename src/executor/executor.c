@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/25 18:48:14 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/27 14:52:39 by marvin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,11 @@ static int	check_cmd(char *cmd, t_memory **shell)
 
 	if (executor_is_builtin(cmd))
 		return (0);
+	if (!cmd)
+	{
+		write(2, "\n", 1);
+		return(1);
+	}
 	if (ft_strchr(cmd, '/'))
 	{
 		if (access(cmd, X_OK) == 0)
@@ -105,7 +110,9 @@ static int	exec_simple_cmd(t_tree *node, t_memory **shell)
 	if (executor_is_builtin(argv[0]))
 		(*shell)->status = exec_builtin_cmd(argv, shell);
 	else
+	{
 		(*shell)->status = exec_external_cmd(argv, shell);
+	}
 	ft_free_string_array(argv);
 	return ((*shell)->status);
 }

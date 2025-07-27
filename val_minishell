@@ -1,0 +1,26 @@
+#!/bin/bash
+
+if [ -x ./minishell ]; then
+  echo "Found minishell binary."
+  valgrind \
+  --leak-check=full \
+  --show-leak-kinds=all \
+  --track-origins=yes \
+  --verbose \
+  --log-file=valgrind_log.txt \
+  --suppressions=readline.supp \
+  --trace-children=no \
+  ./minishell
+else
+   echo "Minishell binary not found, building ..."
+   make re
+   valgrind \
+  --leak-check=full \
+  --show-leak-kinds=all \
+  --track-origins=yes \
+  --verbose \
+  --log-file=valgrind_log.txt \
+  --suppressions=readline.supp \
+  --trace-children=no \
+  ./minishell 
+fi
