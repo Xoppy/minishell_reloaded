@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:05:06 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/23 13:16:44 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/27 21:32:44 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@ int redirect_out(t_tree *node, t_memory **shell, int flags)
         ft_printf("minishell: %s\n", strerror(errno));
         return (1);
     }
-    file_fd = open(node->right->content, flags, 0644);
+    file_fd = open(node->right->argv[0], flags, 0644);
     if (file_fd < 0)
     {
-        ft_printf("minishell: %s: %s\n", node->right->content, strerror(errno));
+        ft_printf("minishell: %s: %s\n", node->right->argv[0], strerror(errno));
         close(saved_stdout);
         return (1);
     }
@@ -62,10 +62,10 @@ int	redirect_in(t_tree *node, t_memory **shell)
 	saved_stdin = dup(STDIN_FILENO);
 	if (saved_stdin < 0)
 		return (1);
-	read_fd = open(node->right->content, O_RDONLY);
+	read_fd = open(node->right->argv[0], O_RDONLY);
 	if (read_fd < 0)
 	{
-		ft_printf("minishell: %s: %s\n", node->right->content, strerror(errno));
+		ft_printf("minishell: %s: %s\n", node->right->argv[0], strerror(errno));
 		close(saved_stdin);
 		return (1);
 	}

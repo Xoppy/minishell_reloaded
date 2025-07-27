@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 12:30:34 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/25 18:44:42 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/27 23:40:44 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ static void	free_no_execve(char *path, t_memory **shell, char **envp,
 	free(path);
 	ft_free_shell(shell);
 	ft_free_string_array(envp);
-	ft_free_string_array(argv);
 	exit(126);
 }
 

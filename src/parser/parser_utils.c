@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parser_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:36:32 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/22 11:46:45 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/27 19:16:10 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_tree  *new_node(const char *content)
 		free(node);
 		return (NULL);
 	}
+	node->argv = NULL;
 	node->left = NULL;
     node->right = NULL;
     node->heredoc_fd = -1;
@@ -45,35 +46,49 @@ t_tree  *new_node(const char *content)
 	return (node);
 }
 
+char **dup_argv(char **tokens, int start, int end)
+{
+	int len;
+	char **argv;
+	int i;
+
+	len = end - start + 1;
+	argv = malloc(sizeof(*argv) * (len + 1));
+	i = 0;
+	while (i < len)
+	{
+		argv[i] = ft_strdup(tokens[start + i]);
+		if (!argv[i])
+		{
+			while (i -- > 0)
+				free(argv[i]);
+			free(argv);
+			return NULL;
+		}
+		i++;
+	}
+	argv[len] = NULL;
+	return argv;
+}
+
 t_tree	*make_command_node(char **tokens, int start, int end)
 {
-	int		total_len;
-	int		i;
-	char	*buf;
-	t_tree	*node;
-
-	total_len = 0;
-	i = start;
-	while (i <= end)
+	t_tree *node;
+	
+	node = malloc(sizeof(*node));
+	node->content = NULL;
+	node->argv = dup_argv(tokens, start,end);
+	if (!node->argv)
 	{
-		total_len += ft_strlen(tokens[i]) + 1;
-		i++;
+		free(node);
+		return(NULL);
 	}
-	buf = malloc(total_len);
-	if (!buf)
-		return (NULL);
-	buf[0] = '\0';
-	i = start;
-	while (i <= end)
-	{
-		ft_strlcat(buf, tokens[i], total_len);
-		if (i < end)
-			ft_strlcat(buf, " ", total_len);
-		i++;
-	}
-	node = new_node(buf);
-	free(buf);
-	return (node);
+	node->left = NULL;
+	node->right = NULL;
+	node->heredoc_fd = -1;
+	node->start = start;
+	node->end = end;
+	return(node);
 }
 
 int is_pipe(char *s)

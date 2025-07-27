@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:48:56 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/17 19:07:20 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/27 23:43:16 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,6 @@ void ft_free_shell(t_memory **shell)
     }
     if ((*shell)->exec)
     {
-        if ((*shell)->exec->argv)
-            ft_free_string_array((*shell)->exec->argv);
         (*shell)->exec->env = NULL;
         (*shell)->exec->ast = NULL;
         free((*shell)->exec);

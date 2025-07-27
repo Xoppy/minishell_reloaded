@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/25 18:28:32 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/27 19:14:10 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ typedef struct s_envi
 typedef struct s_tree
 {
     char    *content;
+    char    **argv;
     struct s_tree   *left;
     struct s_tree   *right;
     int heredoc_fd;
@@ -108,6 +109,7 @@ void    parser_free_ast(t_tree *root);
 int is_pipe(char *s);
 int is_redirect(char *s);
 t_tree  *new_node(const char *content);
+char **dup_argv(char **tokens, int start, int end);
 t_tree  *make_command_node(char **tokens, int start, int end);
 
 // executor

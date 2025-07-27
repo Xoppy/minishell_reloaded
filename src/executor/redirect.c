@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirect.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/24 10:24:45 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/27 21:45:23 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,12 @@ static int	read_heredoc_chain(t_tree *node, t_memory **shell)
 	int	prev_fd;
 	int	cur_fd;
 
-	if (node && ft_strcmp(node->content, "<<") == 0)
+	if (node && node->content && ft_strcmp(node->content, "<<") == 0)
 	{
 		prev_fd = read_heredoc_chain(node->left, shell);
 		if (prev_fd < 0)
 			return (-1);
-		cur_fd = get_heredoc_fd(node->right->content, (*shell)->envi);
+		cur_fd = get_heredoc_fd(node->right->argv[0], (*shell)->envi);
 		if (cur_fd < 0)
 		{
 			if (prev_fd > 0)
@@ -83,7 +83,7 @@ static int	redirect_heredoc(t_tree *node, t_memory **shell)
 		close(heredoc_fd);
 	}
 	cmd = node;
-	while (cmd && ft_strcmp(cmd->content, "<<") == 0)
+	while (cmd && cmd->content && ft_strcmp(cmd->content, "<<") == 0)
 		cmd = cmd->left;
 	status = executor_execute_ast(cmd, shell);
 	dup2(saved_fd, STDIN_FILENO);
