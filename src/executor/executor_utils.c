@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 12:30:34 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/27 23:40:44 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/27 23:53:32 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	child_process(char **argv, t_memory **shell)
 	t_envi	*env_list;
 	char	**envp;
 	char	*path;
+	char *newargv[3];
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -78,5 +79,12 @@ void	child_process(char **argv, t_memory **shell)
 	if (!path)
 		free_no_path(shell, argv, envp);
 	execve(path, argv, envp);
+	if (errno  == ENOEXEC)
+	{
+		newargv[0] = "sh";
+		newargv[1] = path;
+		newargv[2] = NULL;
+		execve("/bin/sh", newargv, envp);
+	}
 	free_no_execve(path, shell, envp, argv);
 }
