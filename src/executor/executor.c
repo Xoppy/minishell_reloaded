@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 07:18:11 by xoppy            ###   ########.fr       */
+/*   Updated: 2025/07/28 13:28:45 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,40 +56,6 @@ static int	exec_external_cmd(char **argv, t_memory **shell)
 	signal_init();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
-	return (1);
-}
-
-static int	check_cmd(char *cmd, t_memory **shell)
-{
-	char	*path;
-
-	if (executor_is_builtin(cmd))
-		return (0);
-	if (!cmd)
-	{
-		write(2, "\n", 1);
-		return (1);
-	}
-	if (ft_strchr(cmd, '/'))
-	{
-		if (access(cmd, X_OK) == 0)
-			return (0);
-		write(2, "minishell: ", 11);
-		write(2, cmd, ft_strlen(cmd));
-		write(2, ": ", 2);
-		write(2, strerror(errno), ft_strlen(strerror(errno)));
-		write(2, "\n", 1);
-		return (1);
-	}
-	path = find_in_path(cmd, (*shell)->envi);
-	if (path)
-	{
-		free(path);
-		return (0);
-	}
-	write(2, "minishell: ", 11);
-	write(2, cmd, ft_strlen(cmd));
-	write(2, ": command not found\n", 20);
 	return (1);
 }
 

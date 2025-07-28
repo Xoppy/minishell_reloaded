@@ -6,21 +6,11 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:36:32 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 06:42:20 by xoppy            ###   ########.fr       */
+/*   Updated: 2025/07/28 13:56:15 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int	token_count(char **tokens)
-{
-	int	i;
-
-	i = 0;
-	while (tokens[i])
-		i++;
-	return (i);
-}
 
 t_tree	*new_node(const char *content)
 {

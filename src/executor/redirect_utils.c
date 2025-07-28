@@ -3,92 +3,85 @@
 /*                                                        :::      ::::::::   */
 /*   redirect_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:05:06 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/28 07:16:31 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/28 13:47:26 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	redirect_out_helper(int file_fd, int saved_stdout)
+static int	save_stdin(void)
 {
-	close(file_fd);
-	print_err_prefix("redirect");
-	ft_putendl_fd(strerror(errno), STDERR_FILENO);
-	if (dup2(saved_stdout, STDOUT_FILENO) < 0)
-	{
-		print_err_prefix("critical error restoring stdout");
-		ft_putendl_fd(strerror(errno), STDERR_FILENO);
-	}
-	close(saved_stdout);
-	return (1);
-}
+	int	fd;
 
-int	redirect_out(t_tree *node, t_memory **shell, int flags)
-{
-	int	saved_stdout;
-	int	file_fd;
-	int	status;
-
-	saved_stdout = dup(STDOUT_FILENO);
-	if (saved_stdout < 0)
+	fd = dup(STDIN_FILENO);
+	if (fd < 0)
 	{
 		print_err_prefix("redirect");
 		ft_putendl_fd(strerror(errno), STDERR_FILENO);
-		return (1);
 	}
-	file_fd = open(node->right->argv[0], flags, 0644);
-	if (file_fd < 0)
+	return (fd);
+}
+
+static int	open_input(char *filename)
+{
+	int	fd;
+
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 	{
-		print_err_prefix(node->right->argv[0]);
-		ft_putendl_fd(strerror(errno), STDERR_FILENO);
-		close(saved_stdout);
-		return (1);
-	}
-	if (dup2(file_fd, STDOUT_FILENO) < 0)
-		return (redirect_out_helper(file_fd, saved_stdout));
-	close(file_fd);
-	status = executor_execute_ast(node->left, shell);
-	if (dup2(saved_stdout, STDOUT_FILENO) < 0)
-	{
-		print_err_prefix("critical error restoring stdout");
+		print_err_prefix(filename);
 		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 	}
-	close(saved_stdout);
-	return (status);
+	return (fd);
+}
+
+static int	apply_redirect_in(int read_fd, int saved_fd)
+{
+	if (dup2(read_fd, STDIN_FILENO) < 0)
+	{
+		print_err_prefix("redirect");
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
+		close(read_fd);
+		dup2(saved_fd, STDIN_FILENO);
+		close(saved_fd);
+		return (-1);
+	}
+	close(read_fd);
+	return (0);
+}
+
+static void	restore_stdin(int saved_fd)
+{
+	if (dup2(saved_fd, STDIN_FILENO) < 0)
+	{
+		print_err_prefix("critical error restoring stdin");
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
+	}
+	close(saved_fd);
 }
 
 int	redirect_in(t_tree *node, t_memory **shell)
 {
-	int	saved_stdin;
+	int	saved_fd;
 	int	read_fd;
 	int	status;
 
-	saved_stdin = dup(STDIN_FILENO);
-	if (saved_stdin < 0)
+	(void)shell;
+	saved_fd = save_stdin();
+	if (saved_fd < 0)
 		return (1);
-	read_fd = open(node->right->argv[0], O_RDONLY);
+	read_fd = open_input(node->right->argv[0]);
 	if (read_fd < 0)
 	{
-		print_err_prefix(node->right->argv[0]);
-		ft_putendl_fd(strerror(errno), STDERR_FILENO);
-		close(saved_stdin);
+		close(saved_fd);
 		return (1);
 	}
-	if (dup2(read_fd, STDIN_FILENO) < 0)
-	{
-		close(read_fd);
-		print_err_prefix("redirect");
-		ft_putendl_fd(strerror(errno), STDERR_FILENO);
-		dup2(saved_stdin, STDIN_FILENO);
-		close(saved_stdin);
+	if (apply_redirect_in(read_fd, saved_fd) < 0)
 		return (1);
-	}
-	close(read_fd);
 	status = executor_execute_ast(node->left, shell);
-	dup2(saved_stdin, STDIN_FILENO);
-	close(saved_stdin);
+	restore_stdin(saved_fd);
 	return (status);
 }

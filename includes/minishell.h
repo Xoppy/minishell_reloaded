@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 14:06:00 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 07:17:32 by xoppy            ###   ########.fr       */
+/*   Updated: 2025/07/28 14:28:58 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,14 @@ char				*prompt_read_line(const char *prompt_fmt);
 
 // tokenizer
 char				**lexer_split_tokens(const char *input_line);
+char				*next_token(const char **sp);
+int					is_special(char c);
 
 // parser
 t_tree				*parser_build_ast(t_memory **shell);
 void				parser_free_ast(t_tree *root);
+t_tree				*make_empty_command(void);
+t_tree				*parse_range(char **tokens, int start, int end);
 int					is_pipe(char *s);
 int					is_redirect(char *s);
 t_tree				*new_node(const char *content);
@@ -119,6 +123,7 @@ int					exec_redirect_node(t_tree *node, t_memory **shell);
 int					redirect_out(t_tree *node, t_memory **shell, int flags);
 int					redirect_in(t_tree *node, t_memory **shell);
 int					get_heredoc_fd(char *delimiter, t_envi *env_list);
+int					check_cmd(char *cmd, t_memory **shell);
 
 // builtins
 int					builtin_cd(t_exec *context);
@@ -148,8 +153,12 @@ char				*find_in_path(const char *cmd, t_envi *env_list);
 // expansion
 char				*expand_token(const char *token, t_envi *env_list,
 						int last_status);
+char				*handle_dollar(const char **cursor, t_envi *env_list,
+						int last_status);
 void				expand_tokens(t_memory **shell);
 int					toggle_quotes(char c, int *in_single, int *in_double);
+char				*get_env_str(char *key, t_envi *env_list);
+char				*append_str(char *origin, char *to_add);
 
 // signals
 void				signal_init(void);

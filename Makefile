@@ -28,13 +28,17 @@ SRCS       := \
 	src/init_env.c \
 	src/prompt.c \
 	src/tokenizer.c \
+	src/tokenizer_utils.c \
 	src/parser/parser.c \
 	src/parser/parser_utils.c \
+	src/parser/parser_utils_2.c \
 	src/executor/executor.c \
 	src/executor/executor_utils.c \
+	src/executor/executor_utils_2.c \
 	src/executor/pipe.c \
 	src/executor/redirect.c \
 	src/executor/redirect_utils.c \
+	src/executor/redirect_utils_2.c \
 	src/builtins/cd.c \
 	src/builtins/cd_utils.c \
 	src/builtins/echo.c \
@@ -54,6 +58,7 @@ SRCS       := \
 	src/utils/path_utils.c \
 	src/utils/expansions.c \
 	src/utils/expansions_utils.c \
+	src/utils/expansions_utils_2.c \
 	src/signals.c
 
 # Object files

@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 06:41:44 by xoppy            ###   ########.fr       */
+/*   Updated: 2025/07/28 13:37:44 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,14 +53,44 @@ static int	read_heredoc_chain(t_tree *node, t_memory **shell)
 	return (0);
 }
 
-static int	redirect_heredoc(t_tree *node, t_memory **shell)
+static int	save_stdin(void)
+{
+	int	fd;
+
+	fd = dup(STDIN_FILENO);
+	if (fd < 0)
+	{
+		print_err_prefix("redirect");
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
+	}
+	return (fd);
+}
+
+static int	apply_heredoc(int heredoc_fd, int saved_fd)
+{
+	if (heredoc_fd <= 0)
+		return (0);
+	if (dup2(heredoc_fd, STDIN_FILENO) < 0)
+	{
+		close(heredoc_fd);
+		dup2(saved_fd, STDIN_FILENO);
+		print_err_prefix("redirect");
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
+		close(saved_fd);
+		return (-1);
+	}
+	close(heredoc_fd);
+	return (0);
+}
+
+int	redirect_heredoc(t_tree *node, t_memory **shell)
 {
 	int		saved_fd;
 	int		heredoc_fd;
 	t_tree	*cmd;
 	int		status;
 
-	saved_fd = dup(STDIN_FILENO);
+	saved_fd = save_stdin();
 	if (saved_fd < 0)
 		return (1);
 	heredoc_fd = read_heredoc_chain(node, shell);
@@ -70,19 +100,10 @@ static int	redirect_heredoc(t_tree *node, t_memory **shell)
 		close(saved_fd);
 		return (1);
 	}
-	if (heredoc_fd > 0)
-	{
-		if (dup2(heredoc_fd, STDIN_FILENO) < 0)
-		{
-			close(heredoc_fd);
-			dup2(saved_fd, STDIN_FILENO);
-			close(saved_fd);
-			return (1);
-		}
-		close(heredoc_fd);
-	}
+	if (apply_heredoc(heredoc_fd, saved_fd) < 0)
+		return (1);
 	cmd = node;
-	while (cmd && cmd->content && ft_strcmp(cmd->content, "<<") == 0)
+	while (cmd && cmd->content && !ft_strcmp(cmd->content, "<<"))
 		cmd = cmd->left;
 	status = executor_execute_ast(cmd, shell);
 	dup2(saved_fd, STDIN_FILENO);

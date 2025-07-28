@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 07:20:20 by xoppy            ###   ########.fr       */
+/*   Updated: 2025/07/28 14:14:27 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	*get_env_str(char *key, t_envi *env_list)
+char	*get_env_str(char *key, t_envi *env_list)
 {
 	t_envi	*current;
 
@@ -27,7 +27,7 @@ static char	*get_env_str(char *key, t_envi *env_list)
 	return (ft_strdup(""));
 }
 
-static char	*append_str(char *origin, char *to_add)
+char	*append_str(char *origin, char *to_add)
 {
 	char	*joined;
 
@@ -37,70 +37,6 @@ static char	*append_str(char *origin, char *to_add)
 	free(origin);
 	free(to_add);
 	return (joined);
-}
-
-static char	*handle_dollar(const char **cursor, t_envi *env_list,
-		int last_status)
-{
-	const char	*start;
-	char		*key_str;
-	char		*expansion;
-	char		*status_str;
-
-	if ((*cursor)[1] == '?')
-	{
-		status_str = ft_itoa(last_status);
-		expansion = ft_strdup(status_str);
-		free(status_str);
-		*cursor += 2;
-		return (expansion);
-	}
-	if (ft_isalpha((*cursor)[1]) || (*cursor)[1] == '_')
-	{
-		*cursor += 1;
-		start = *cursor;
-		while (ft_isalnum(**cursor) || **cursor == '_')
-			(*cursor)++;
-		key_str = ft_mini_strndup(start, *cursor - start);
-		expansion = get_env_str(key_str, env_list);
-		free(key_str);
-		return (expansion);
-	}
-	*cursor += 1;
-	return (ft_strdup("$"));
-}
-
-char	*expand_token(const char *token, t_envi *env_list, int last_status)
-{
-	const char	*cursor;
-	char		*result;
-	char		*fragment;
-	int			in_single;
-	int			in_double;
-
-	cursor = token;
-	result = NULL;
-	in_single = 0;
-	in_double = 0;
-	while (*cursor)
-	{
-		if (toggle_quotes(*cursor, &in_single, &in_double))
-		{
-			cursor++;
-			continue ;
-		}
-		if (*cursor == '$' && !in_single && cursor[1] != '\0')
-			fragment = handle_dollar(&cursor, env_list, last_status);
-		else
-		{
-			fragment = ft_mini_strndup(cursor, 1);
-			cursor++;
-		}
-		result = append_str(result, fragment);
-	}
-	if (!result)
-		result = ft_mini_strndup("", 0);
-	return (result);
 }
 
 void	expand_tokens(t_memory **shell)

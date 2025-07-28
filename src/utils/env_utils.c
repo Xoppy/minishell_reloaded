@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
+/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:59:44 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/28 06:45:50 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/28 13:59:31 by ituriel          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	**env_list_to_array(t_envi *env)
 	size_t	i;
 
 	len = get_env_count(env);
-	arr = malloc(sizeof *arr * (len + 1));
+	arr = malloc(sizeof(*arr) * (len + 1));
 	if (!arr)
 		return (NULL);
 	i = 0;
@@ -70,10 +70,10 @@ t_envi	*duplicate_env_list(t_envi *env)
 	copy = NULL;
 	while (env)
 	{
-		curr = malloc(sizeof *curr);
+		curr = malloc(sizeof(*curr));
 		if (!curr)
 			return (NULL);
-		curr->env = malloc(sizeof *curr->env);
+		curr->env = malloc(sizeof(*curr->env));
 		if (!curr->env)
 			return (NULL);
 		curr->env->key = ft_strdup(env->env->key);
