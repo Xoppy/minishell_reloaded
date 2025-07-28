@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:43:03 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 12:19:22 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/28 06:57:12 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,10 @@ int	builtin_cd(t_exec *context)
 	ret = chdir(target);
 	if (ret < 0)
 	{
-		ft_printf("minishell: cd: %s: %s\n", target, strerror(errno));
+		print_err_prefix("cd");
+		ft_putstr_fd(target, STDERR_FILENO);
+		ft_putstr_fd(": ", STDERR_FILENO);
+		ft_putendl_fd(strerror(errno), STDERR_FILENO);
 		return (1);
 	}
 	update_pwd_env(&context->env, oldpwd);

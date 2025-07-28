@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: adi-marc < adi-marc@student.42luxembour    +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:35:48 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/09 16:17:48 by adi-marc         ###   ########.fr       */
+/*   Updated: 2025/07/28 07:18:04 by xoppy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,10 @@ int	builtin_unset(t_exec *context)
 		if (context->argv[i][0] == '\0' || (!ft_isalpha(context->argv[i][0])
 				&& context->argv[i][0] != '_'))
 		{
-			ft_printf("minishell: unset: `%s': not a valid identifier\n",
-				context->argv[i]);
+			print_err_prefix("unset");
+			ft_putstr_fd("`", STDERR_FILENO);
+			ft_putstr_fd(context->argv[i], STDERR_FILENO);
+			ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 			status = 1;
 		}
 		else

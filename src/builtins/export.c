@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:10:18 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 12:22:07 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/28 07:10:52 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,10 @@ static int	prepare_key_vals(const char *arg, char **key, char ***vals)
 		return (1);
 	if (!is_valid_name(*key))
 	{
-		ft_printf("minishell: export: `%s': not a valid identifier\n", *key);
+		print_err_prefix("export");
+		ft_putstr_fd("`", STDERR_FILENO);
+		ft_putstr_fd(*key, STDERR_FILENO);
+		ft_putendl_fd("': not a valid identifier", STDERR_FILENO);
 		free(*key);
 		return (-1);
 	}

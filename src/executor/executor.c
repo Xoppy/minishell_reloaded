@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 15:48:26 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/27 23:39:12 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/28 07:18:11 by xoppy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,13 +46,13 @@ static int	exec_external_cmd(char **argv, t_memory **shell)
 	}
 	if (pid == 0)
 	{
-        signal(SIGINT,  SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		child_process(argv, shell);
 	}
 	waitpid(pid, &status, 0);
 	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-+        write(STDERR_FILENO, "\n", 1);
+		+write(STDERR_FILENO, "\n", 1);
 	signal_init();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
@@ -68,7 +68,7 @@ static int	check_cmd(char *cmd, t_memory **shell)
 	if (!cmd)
 	{
 		write(2, "\n", 1);
-		return(1);
+		return (1);
 	}
 	if (ft_strchr(cmd, '/'))
 	{

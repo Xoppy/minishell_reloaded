@@ -6,7 +6,7 @@
 /*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 16:28:35 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/27 21:45:23 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/28 06:41:44 by xoppy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,6 @@ int	exec_redirect_node(t_tree *node, t_memory **shell)
 		return (redirect_heredoc(node, shell));
 	return (1);
 }
-
 
 static int	read_heredoc_chain(t_tree *node, t_memory **shell)
 {

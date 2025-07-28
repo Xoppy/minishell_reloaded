@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd_utils.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/10 10:36:16 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 12:19:26 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/28 06:57:49 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,14 +92,15 @@ int	error_cd(char *target)
 {
 	if (!target)
 	{
-		ft_printf("minishell: cd: HOME not set\n");
+		print_err_prefix("cd");
+		ft_putendl_fd("HOME not set", STDERR_FILENO);
 		return (1);
 	}
 	else if (target == (char *)-1)
 	{
-		ft_printf("minishell: cd: OLDPWD not set\n");
+		print_err_prefix("cd");
+		ft_putendl_fd("OLDPWD not set", STDERR_FILENO);
 		return (1);
 	}
-	else
-		return (0);
+	return (0);
 }

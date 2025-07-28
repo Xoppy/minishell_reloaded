@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: marvin <marvin@student.42.fr>              +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 12:56:24 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/27 15:44:57 by marvin           ###   ########.fr       */
+/*   Updated: 2025/07/28 07:20:20 by xoppy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,28 @@ static char	*get_env_str(char *key, t_envi *env_list)
 	current = env_list;
 	while (current)
 	{
-		if (!ft_strcmp(current->env->key, key)
-			&& current->env->values && current->env->values[0])
+		if (!ft_strcmp(current->env->key, key) && current->env->values
+			&& current->env->values[0])
 			return (ft_strdup(current->env->values[0]));
 		current = current->next;
 	}
 	return (ft_strdup(""));
 }
 
-static char *append_str(char *origin, char *to_add)
+static char	*append_str(char *origin, char *to_add)
 {
-	char *joined;
+	char	*joined;
 
-    if (!origin)
-        return to_add;     // just return fragment, don’t strdup()
-    joined = ft_strjoin(origin, to_add);
-    free(origin);
-    free(to_add);
-    return joined;
+	if (!origin)
+		return (to_add);
+	joined = ft_strjoin(origin, to_add);
+	free(origin);
+	free(to_add);
+	return (joined);
 }
 
 static char	*handle_dollar(const char **cursor, t_envi *env_list,
-							int last_status)
+		int last_status)
 {
 	const char	*start;
 	char		*key_str;
@@ -66,7 +66,6 @@ static char	*handle_dollar(const char **cursor, t_envi *env_list,
 		free(key_str);
 		return (expansion);
 	}
-	/* lone '$' */
 	*cursor += 1;
 	return (ft_strdup("$"));
 }
@@ -79,8 +78,8 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 	int			in_single;
 	int			in_double;
 
-	cursor    = token;
-	result    = NULL;
+	cursor = token;
+	result = NULL;
 	in_single = 0;
 	in_double = 0;
 	while (*cursor)
@@ -88,7 +87,7 @@ char	*expand_token(const char *token, t_envi *env_list, int last_status)
 		if (toggle_quotes(*cursor, &in_single, &in_double))
 		{
 			cursor++;
-			continue;
+			continue ;
 		}
 		if (*cursor == '$' && !in_single && cursor[1] != '\0')
 			fragment = handle_dollar(&cursor, env_list, last_status);
@@ -108,9 +107,9 @@ void	expand_tokens(t_memory **shell)
 {
 	int		index;
 	char	*expanded;
-	char **tokens;
-	t_envi *env_list;
-	int last_status;
+	char	**tokens;
+	t_envi	*env_list;
+	int		last_status;
 
 	tokens = (*shell)->tokens;
 	env_list = (*shell)->envi;

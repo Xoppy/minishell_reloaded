@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   executor_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ituriel <ituriel@student.42.fr>            +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 12:30:34 by cauffret          #+#    #+#             */
-/*   Updated: 2025/07/27 23:53:32 by ituriel          ###   ########.fr       */
+/*   Updated: 2025/07/28 07:18:20 by xoppy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,8 @@ int	executor_run_builtin(t_exec *context, t_memory **shell)
 
 static void	free_no_path(t_memory **shell, char **argv, char **envp)
 {
-	ft_printf("minishell: %s: command not found\n", argv[0]);
+	print_err_prefix(argv[0]);
+	ft_putendl_fd("command not found", STDERR_FILENO);
 	ft_free_shell(shell);
 	ft_free_string_array(envp);
 	ft_free_string_array(argv);
@@ -54,7 +55,8 @@ static void	free_no_path(t_memory **shell, char **argv, char **envp)
 static void	free_no_execve(char *path, t_memory **shell, char **envp,
 		char **argv)
 {
-	ft_printf("minishell: %s: %s\n", argv[0], strerror(errno));
+	print_err_prefix(argv[0]);
+	ft_putendl_fd(strerror(errno), STDERR_FILENO);
 	free(path);
 	ft_free_shell(shell);
 	ft_free_string_array(envp);
@@ -66,7 +68,7 @@ void	child_process(char **argv, t_memory **shell)
 	t_envi	*env_list;
 	char	**envp;
 	char	*path;
-	char *newargv[3];
+	char	*newargv[3];
 
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -79,7 +81,7 @@ void	child_process(char **argv, t_memory **shell)
 	if (!path)
 		free_no_path(shell, argv, envp);
 	execve(path, argv, envp);
-	if (errno  == ENOEXEC)
+	if (errno == ENOEXEC)
 	{
 		newargv[0] = "sh";
 		newargv[1] = path;

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: cauffret <cauffret@student.42.fr>          +#+  +:+       +#+        */
+/*   By: adi-marc <adi-marc@student.42luxembourg    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/08 17:45:55 by adi-marc          #+#    #+#             */
-/*   Updated: 2025/07/23 12:26:30 by cauffret         ###   ########.fr       */
+/*   Updated: 2025/07/28 07:05:10 by adi-marc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,8 @@ static void	exit_case(t_exec *context, t_memory **shell, int argc, long *code)
 {
 	if (argc > 2)
 	{
-		ft_printf("minishell: exit: too many arguments\n");
+		print_err_prefix("exit");
+		ft_putendl_fd("too many arguments", STDERR_FILENO);
 		ft_free_shell(shell);
 		exit(1);
 	}
@@ -39,8 +40,10 @@ static void	exit_case(t_exec *context, t_memory **shell, int argc, long *code)
 	{
 		if (!is_numeric(context->argv[1]))
 		{
-			ft_printf("minishell: exit: %s: numeric argument required\n",
-				context->argv[1]);
+			print_err_prefix("exit");
+			ft_putstr_fd(context->argv[1], STDERR_FILENO);
+			ft_putstr_fd(": ", STDERR_FILENO);
+			ft_putendl_fd("numeric argument required", STDERR_FILENO);
 			ft_free_shell(shell);
 			exit(2);
 		}
